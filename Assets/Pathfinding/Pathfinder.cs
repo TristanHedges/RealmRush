@@ -38,6 +38,7 @@ public class Pathfinder : MonoBehaviour
         destinationNode = gridManager.Grid[destinationCoordinates];
 
         BreadthFirstSearch();
+        BuildPath();
     }
 
     void ExploreNeighbors()
@@ -96,7 +97,12 @@ public class Pathfinder : MonoBehaviour
         while(currentNode.connectedTo != null)
         {
             currentNode = currentNode.connectedTo;
+            path.Add(currentNode);
             currentNode.isInPath = true;
         }
+
+        path.Reverse();
+
+        return path;
     }
 }
