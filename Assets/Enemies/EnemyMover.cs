@@ -5,49 +5,44 @@ using UnityEngine;
 [RequireComponent(typeof(Enemy))]
 public class EnemyMover : MonoBehaviour
 {
-    [SerializeField] List<Tile> path = new List<Tile>();
     [Range(0,5)][SerializeField] float movementSpeed = 1f;
+    List<Node> path = new List<Node>();
 
     GameSession gameSession;
+    GridManager gridManager;
+    Pathfinder pathfinder;
 
     void Awake()
     {
         gameSession = FindObjectOfType<GameSession>();
+        gridManager = FindObjectOfType<GridManager>();
+        pathfinder = FindObjectOfType<Pathfinder>();
     }
 
     void OnEnable() //Called whenever an object is enabled.
     {    
-        GeneratePath();
+        RecalculatePath();
         ReturnToStart();
         StartCoroutine(MoveEnemy());   
     }
 
-    void GeneratePath()
+    void RecalculatePath()
     {
         path.Clear();
-
-        GameObject parent = GameObject.FindGameObjectWithTag("Path");
-        foreach(Transform child in parent.transform)
-        {
-            Tile tile = child.GetComponent<Tile>();
-            if (tile != null)
-            {
-                path.Add(tile);
-            }
-        }
+        path = pathfinder.GetNewPath();
     }
 
     void ReturnToStart()
     {
-        transform.position = path[0].transform.position;
+        transform.position = gridManager.GetWorldPositionFromCoordinates(pathfinder.StartCoordinates);
     }
 
     IEnumerator MoveEnemy()
     {
-        foreach (Tile tile in path)
+        for(int i = 0; i < path.Count; i++)
         {
             var startPosition = transform.position;
-            var endPosition = tile.transform.position;
+            var endPosition = gridManager.GetWorldPositionFromCoordinates(path[i].coordinates);
             var step = 0f;
 
             while (step < 1f)

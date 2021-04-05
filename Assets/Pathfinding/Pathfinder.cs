@@ -5,9 +5,12 @@ using UnityEngine;
 public class Pathfinder : MonoBehaviour
 {
     [SerializeField] Vector2Int startCoordinates;
+    public Vector2Int StartCoordinates { get { return startCoordinates; } }
     [SerializeField] Vector2Int destinationCoordinates;
+    public Vector2Int DestinationCoordinates { get { return destinationCoordinates; } }
 
     Node startNode;
+
     Node destinationNode;
     Node currentSearchNode;
 
@@ -27,19 +30,17 @@ public class Pathfinder : MonoBehaviour
         if(gridManager != null)
         {
             grid = gridManager.Grid;
-        }
+            startNode = grid[startCoordinates];
+            destinationNode = grid[destinationCoordinates];
 
-        
+        }
     }
 
     void Start()
     {
-        startNode = gridManager.Grid[startCoordinates];
-        destinationNode = gridManager.Grid[destinationCoordinates];
-
-        BreadthFirstSearch();
-        BuildPath();
+        GetNewPath();
     }
+
 
     void ExploreNeighbors()
     {
@@ -69,6 +70,12 @@ public class Pathfinder : MonoBehaviour
 
     void BreadthFirstSearch()
     {
+        startNode.isWalkable = true;
+        destinationNode.isWalkable = true;
+
+        frontier.Clear();
+        reachedDictionary.Clear();
+
         bool isRunning = true;
 
         frontier.Enqueue(startNode);
@@ -104,5 +111,38 @@ public class Pathfinder : MonoBehaviour
         path.Reverse();
 
         return path;
+    }
+
+    public List<Node> GetNewPath()
+    {
+        gridManager.ResetNodes();
+        BreadthFirstSearch();
+        return BuildPath();
+    }
+
+    public bool WillBlockPath(Vector2Int coordinates)
+    {
+        if (grid.ContainsKey(coordinates))
+        {
+            bool previousState = grid[coordinates].isWalkable;
+
+            grid[coordinates].isWalkable = false;
+            List<Node> newPath = GetNewPath();
+            grid[coordinates].isWalkable = previousState;
+
+            if(newPath.Count <= 1)
+            {
+                GetNewPath();
+                return true;
+            }
+            return false;
+        }
+
+        return false;
+    }
+
+    public void NotifyRecievers()
+    {
+        BroadcastMessage("RecalculatePath", SendMessageOptions.DontRequireReceiver);
     }
 }
