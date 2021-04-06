@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5297049063192272250}
   - component: {fileID: 5491265998882897999}
   - component: {fileID: 5315298153809888725}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,7 +73,7 @@ GameObject:
   - component: {fileID: 5468547393482330703}
   - component: {fileID: 8528235239923464250}
   - component: {fileID: 4675572540316677980}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: CoordinateText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -259,7 +259,7 @@ GameObject:
   - component: {fileID: 130369459730277295}
   - component: {fileID: 2961122292885248741}
   - component: {fileID: 1746762410976968305}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GrassMesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
